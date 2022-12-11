@@ -1,6 +1,6 @@
-import { Conversation } from "./types";
 import { ConversationRow } from "./ConversationRow";
 import { List } from "@mui/material";
+import { Conversation } from "../../store/Conversations/types";
 
 const CONVERSATIONS: Conversation[] = [
   {

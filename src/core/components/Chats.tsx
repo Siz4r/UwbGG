@@ -1,4 +1,5 @@
-import { Conversation, UserData } from "./types";
+import { Conversation } from "../../store/Conversations/types";
+import { UserData } from "./types";
 
 export type ChatRowEntity = UserData | Conversation;
 

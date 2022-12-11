@@ -1,3 +1,5 @@
+import { Conversation } from "../../store/Conversations/types";
+
 export interface Message {
   id?: string;
   ownerId?: string;
@@ -5,13 +7,6 @@ export interface Message {
   content: string;
   sendTime: Date;
   noticed?: boolean;
-}
-
-export interface Conversation {
-  id: string;
-  name: string;
-  isActive: boolean;
-  lastMessage: Message;
 }
 
 export interface UserChatData {

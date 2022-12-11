@@ -1,18 +1,35 @@
 import * as React from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import MenuIcon from "@mui/icons-material/Menu";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { SearchUserInput } from "./components/SearchUserInput";
+import ChatIcon from "@mui/icons-material/Chat";
 import ConversationCreateModal from "./components/ConversationCreateModal";
-import { Avatar, Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
+import {
+  Avatar,
+  Divider,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
+import { Logout } from "@mui/icons-material";
+import { useAppDispatch } from "./hooks/reduxHooks";
+import { logout } from "../store/Users/api";
+import { useNavigate } from "react-router";
+import { RouterPathsKeys } from "../types/RouterPaths";
+import { parseErrorToString } from "./parseErrorToString";
 
 export default function Nav() {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [formError, setFormError] = useState<string | undefined>(undefined);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -20,10 +37,40 @@ export default function Nav() {
     setAnchorEl(null);
   };
 
+  const logoutUser = async () => {
+    try {
+      const result = await dispatch(logout());
+
+      if (logout.rejected.match(result)) {
+        throw result.payload;
+      }
+
+      navigate(RouterPathsKeys.LOGIN);
+    } catch (e) {
+      parseErrorToString(e, setFormError);
+    }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }} maxHeight={"100%"}>
       <AppBar position="sticky">
         <Toolbar>
+          <Box
+            sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
+          >
+            <Tooltip title="Account settings">
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                sx={{ ml: 1 }}
+                aria-controls={open ? "account-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+              >
+                <SettingsIcon sx={{ width: 32, height: 32 }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
           <Menu
             anchorEl={anchorEl}
             id="account-menu"
@@ -47,7 +94,7 @@ export default function Nav() {
                   display: "block",
                   position: "absolute",
                   top: 0,
-                  right: 14,
+                  left: "14%",
                   width: 10,
                   height: 10,
                   bgcolor: "background.paper",
@@ -59,26 +106,20 @@ export default function Nav() {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem>
+            <MenuItem onClick={() => navigate(RouterPathsKeys.USERINFO)}>
               <Avatar /> Profile
             </MenuItem>
             <MenuItem>
-              <Avatar /> My account
+              <Avatar /> My Friends
             </MenuItem>
             <Divider />
-            <MenuItem>
+            <MenuItem onClick={() => navigate(RouterPathsKeys.CHATS)}>
               <ListItemIcon>
-                <PersonAdd fontSize="small" />
+                <ChatIcon fontSize="small" />
               </ListItemIcon>
-              Add another account
+              Chat
             </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              Settings
-            </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => logoutUser()}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
@@ -90,9 +131,7 @@ export default function Nav() {
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            MUI
-          </Typography>
+          ></Typography>
           <ConversationCreateModal name={"Konfa"} friends={[]} />
           <SearchUserInput />
         </Toolbar>

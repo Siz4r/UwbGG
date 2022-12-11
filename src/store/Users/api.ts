@@ -186,16 +186,16 @@ export const logout = createAsyncThunk<void, void, {}>(
   "user/logout",
   async (_, thunkAPI) => {
     try {
-      await apiFetch(
-        "/auth/logout/",
-        {
-          requestConfig: {
-            method: "POST",
-            withCredentials: true,
-          },
-        },
-        AuthorizationLevel.AUTHORIZED
-      );
+      // await apiFetch(
+      //   "/auth/logout/",
+      //   {
+      //     requestConfig: {
+      //       method: "POST",
+      //       withCredentials: true,
+      //     },
+      //   },
+      //   AuthorizationLevel.AUTHORIZED
+      // );
       localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
       storage.removeItem("persist:root");
       localStorage.removeItem("persist:root");

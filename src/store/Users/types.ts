@@ -1,4 +1,4 @@
-import { Conversation } from "../../core/components/types";
+import { Conversation } from "../Conversations/types";
 
 export interface User {
   id: string;
