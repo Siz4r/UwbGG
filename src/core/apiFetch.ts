@@ -1,8 +1,7 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 import decode from "jwt-decode";
-import localStorage from "redux-persist/es/storage";
-import { LocalStorageKeys } from "../types/LocalStorageKeys";
-import { Token } from "../types/Token";
+import {LocalStorageKeys} from "../types/LocalStorageKeys";
+import {Token} from "../types/Token";
 
 const apiUrl = "http://localhost:5000";
 
@@ -21,9 +20,9 @@ const isJwtExpired = (jwt: string) => {
     const decoded: { exp: number } = decode(jwt, { header: false });
     if (!decoded || !decoded.exp) return false;
 
-    if (decoded.exp * 1000 <= new Date().getTime()) return true;
+    return decoded.exp * 1000 <= new Date().getTime();
 
-    return false;
+
   } catch (error) {
     return false;
   }
@@ -61,8 +60,7 @@ const getTokens = async (): Promise<Token | undefined> => {
 
 const unAuthFetch = (args: fetchArgs, path: string): Promise<AxiosResponse> => {
   try {
-    const response = axios(path, args.requestConfig);
-    return response;
+    return axios(path, args.requestConfig);
   } catch (error: any) {
     throw error.response.data;
   }
@@ -78,7 +76,7 @@ const authFetch = async (
     const tokens = await getTokens();
 
     if (!tokens) throw new Error("Refresh and access tokens expired!");
-    const response = axios(path, {
+    return axios(path, {
       ...config,
       headers: {
         Authorization: `Bearer ${tokens.accessToken}`,
@@ -86,7 +84,6 @@ const authFetch = async (
       },
       withCredentials: true,
     });
-    return response;
   } catch (error: any) {
     throw error.response.data;
   }

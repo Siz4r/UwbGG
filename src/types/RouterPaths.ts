@@ -1,6 +1,6 @@
 export enum AuthenticatedPaths {
-  MY_PROFILE = "/my-profile/",
-  EMPLOYEE = "/employee/",
+  CHATS = "/chats/",
+  USERINFO = "/userinfo/",
   CLIENT = "/client/",
   ORDER = "/order/",
   COMPANY = "/company/",
@@ -9,9 +9,8 @@ export enum AuthenticatedPaths {
 }
 
 export enum UnAuthenticatedPaths {
-  SIGN_IN = "/sign-in",
-  FORGOT_PASSWORD = "/forgot-password",
-  RESTART_PASSWORD = "/restart-password/",
+  LOGIN = "/login",
+  REGISTER = "/register",
 }
 
 export const RouterPathsKeys = {
