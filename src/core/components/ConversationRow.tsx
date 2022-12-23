@@ -2,21 +2,17 @@ import { Message } from "./types";
 import {
   Box,
   Grid,
-  List,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
   Typography,
 } from "@mui/material";
 import { timeDiff, truncate } from "../utils";
-import { dark } from "@mui/material/styles/createPalette";
-import moment from "moment";
 
 type Props = {
   id: string;
   name: string;
   isActive: boolean;
-  lastMessage: Message;
+  lastMessage?: Message;
 };
 
 export const ConversationRow = (props: Props) => {
@@ -41,15 +37,19 @@ export const ConversationRow = (props: Props) => {
                     color: "#757575",
                   }}
                 >
-                  {props.lastMessage.nick +
-                    ": " +
-                    truncate(props.lastMessage.content, 16)}
+                  {props.lastMessage
+                    ? props.lastMessage.nick +
+                      ": " +
+                      truncate(props.lastMessage.content, 16)
+                    : "Nowa konwersacja!"}
                 </Typography>
               </Grid>
               <Grid item xs={3}>
-                <Typography sx={{ color: "#616161" }} textAlign={"end"}>
-                  {timeDiff(props.lastMessage.sendTime, new Date())}
-                </Typography>
+                {props.lastMessage && (
+                  <Typography sx={{ color: "#616161" }} textAlign={"end"}>
+                    {timeDiff(props.lastMessage.sendTime, new Date())}
+                  </Typography>
+                )}
               </Grid>
             </Grid>
           </Grid>

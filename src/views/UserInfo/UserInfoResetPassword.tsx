@@ -49,7 +49,7 @@ export const UserInfoResetPassword = (props: Props) => {
       sx={{ mt: 1 }}
       height={"100%"}
     >
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Change password
       </Typography>
       <TextField

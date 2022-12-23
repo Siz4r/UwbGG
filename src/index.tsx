@@ -14,6 +14,7 @@ import { UserInfo } from "./views/UserInfo/UserInfo";
 import { RegisterPage } from "./views/Register/RegisterPage";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import {Friends} from "./views/Friends/Friends";
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);
@@ -39,6 +40,11 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
     errorElement: <ErrorPage />,
   },
+  {
+    path: "/friends",
+    element: <Friends />,
+    errorElement: <ErrorPage />
+  }
 ]);
 
 root.render(

@@ -59,7 +59,7 @@ export const UserInfoEditData = (props: Props) => {
       sx={{ mt: 1 }}
       height={"100%"}
     >
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Edit your data
       </Typography>
       <TextField

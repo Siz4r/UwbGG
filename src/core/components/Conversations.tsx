@@ -13,6 +13,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date("02-11-2022"),
     },
+    participants: [],
   },
   {
     id: "2",
@@ -24,6 +25,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date("02-11-2022"),
     },
+    participants: [],
   },
   {
     id: "3",
@@ -35,6 +37,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date("02-11-2022"),
     },
+    participants: [],
   },
   {
     id: "4",
@@ -46,6 +49,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date("02-11-2022"),
     },
+    participants: [],
   },
   {
     id: "5",
@@ -57,6 +61,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date(),
     },
+    participants: [],
   },
   {
     id: "6",
@@ -68,6 +73,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date(),
     },
+    participants: [],
   },
   {
     id: "7",
@@ -79,6 +85,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date(),
     },
+    participants: [],
   },
   {
     id: "8",
@@ -90,6 +97,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date(),
     },
+    participants: [],
   },
   {
     id: "9",
@@ -101,6 +109,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date(),
     },
+    participants: [],
   },
   {
     id: "10",
@@ -112,6 +121,7 @@ const CONVERSATIONS: Conversation[] = [
       nick: "Szulborak",
       sendTime: new Date(),
     },
+    participants: [],
   },
 ];
 

@@ -4,6 +4,8 @@ import storage from "redux-persist/lib/storage";
 import { userSlice } from "./Users/slice";
 import { logout } from "./Users/api";
 import { invitationSlice } from "./Invitations/slice";
+import { friendsSlice } from "./Friends/slice";
+import { convsSlice } from "./Conversations/slice";
 
 const persistConfig = {
   key: "root",
@@ -13,6 +15,8 @@ const persistConfig = {
 const appReducer = combineReducers({
   user: userSlice.reducer,
   invitations: invitationSlice.reducer,
+  friends: friendsSlice.reducer,
+  convs: convsSlice.reducer,
 });
 
 const rootReducer = (state: any, action: any) => {

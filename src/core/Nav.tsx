@@ -23,9 +23,12 @@ import { logout } from "../store/Users/api";
 import { useNavigate } from "react-router";
 import { RouterPathsKeys } from "../types/RouterPaths";
 import { parseErrorToString } from "./parseErrorToString";
+import { useSelectUser } from "./hooks/SelectUser/SelectUser";
+import { isBoolean } from "../utils/isCheckers/isBoolean";
 
 export default function Nav() {
   const dispatch = useAppDispatch();
+  const { user } = useSelectUser();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -109,7 +112,7 @@ export default function Nav() {
             <MenuItem onClick={() => navigate(RouterPathsKeys.USERINFO)}>
               <Avatar /> Profile
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => navigate(RouterPathsKeys.FRIENDS)}>
               <Avatar /> My Friends
             </MenuItem>
             <Divider />
@@ -132,7 +135,16 @@ export default function Nav() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
           ></Typography>
-          <ConversationCreateModal name={"Konfa"} friends={[]} />
+          {!isBoolean(user) && (
+            <ConversationCreateModal
+              name={"Konfa"}
+              friends={
+                user.friends
+                  ? user.friends.map((f) => f.firstName + " " + f.lastName)
+                  : []
+              }
+            />
+          )}
           <SearchUserInput />
         </Toolbar>
       </AppBar>

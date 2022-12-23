@@ -8,6 +8,8 @@ import Users from "../../MOCK_DATA.json";
 import { UserData } from "./types";
 import { Button, Grid, List, ListItem } from "@mui/material";
 import { theme } from "../../views/UserInfo/UserInfoFormInput";
+import { useAppDispatch } from "../hooks/reduxHooks";
+import { addFriend } from "../../store/Friends/api";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -53,6 +55,8 @@ export const SearchUserInput = () => {
   const [filteredUsers, setFilteredUsers] = useState<UserData[]>([]);
   const [focused, setFocused] = useState(false);
 
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (value !== "") {
       setFilteredUsers(
@@ -70,6 +74,12 @@ export const SearchUserInput = () => {
       setFilteredUsers([]);
     }
   }, [value]);
+
+  const addFriendOnClick = (user: UserData) => {
+    if (user && user.id) {
+      dispatch(addFriend(user));
+    }
+  };
 
   return (
     <Search>
@@ -115,7 +125,7 @@ export const SearchUserInput = () => {
                   <Button
                     variant="contained"
                     endIcon={<SendIcon />}
-                    onClick={() => console.log("dupa")}
+                    onClick={() => addFriendOnClick(user)}
                     sx={{
                       maxWidth: "40px",
                     }}

@@ -11,6 +11,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  Grid,
 } from "@mui/material";
 import { theme } from "../../views/UserInfo/UserInfoFormInput";
 
@@ -27,19 +28,21 @@ const ConversationView: React.FC<Props> = (props) => {
   const [newFriend, setNewFriend] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFriends([...friends, { name: newFriend, selected: false }]);
-    setNewFriend("");
+  const addNewFriend = () => {
+    console.log(newFriend);
+    setFriends((prevState) =>
+      prevState.map((f) => {
+        if (f.name === newFriend) return { name: f.name, selected: true };
+        else return f;
+      })
+    );
+    const temp = friends.filter((f) => !f.selected).pop();
+    setNewFriend(temp ? temp.name : "");
   };
 
   const handleSelect = (event: SelectChangeEvent<string>) => {
     const friend = event.target.value as string;
-    const updatedFriends = friends.map((f) =>
-      f.name === friend ? { ...f, selected: true } : f
-    );
-    setFriends(updatedFriends);
-    setNewFriend("");
+    setNewFriend(friend);
   };
 
   return (
@@ -51,75 +54,63 @@ const ConversationView: React.FC<Props> = (props) => {
         <Box
           sx={{
             width: "100%",
-            maxWidth: 360,
+            maxWidth: 720,
             backgroundColor: theme.palette.background.paper,
             padding: theme.spacing(2),
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
+            direction: "column",
           }}
         >
-          <form onSubmit={handleSubmit}>
-            <TextField
-              label="Name"
-              value={name}
-              onChange={(event: any) => setName(event.target.value)}
-            />
-            <Select
-              label="Add friend"
-              value={newFriend}
-              onChange={handleSelect}
-            >
-              {friends
-                .filter((friend) => !friend.selected)
-                .map((friend) => (
-                  <MenuItem key={friend.name} value={friend.name}>
-                    {friend.name}
-                  </MenuItem>
-                ))}
-            </Select>
-            <Button type="submit">Add friend</Button>
-          </form>
-          {name && <Typography variant="h6">{name}</Typography>}
-
+          <Grid container>
+            <Grid item>
+              <TextField
+                label="Name"
+                value={name}
+                onChange={(event: any) => setName(event.target.value)}
+              />
+            </Grid>
+            <Grid item>
+              <Select
+                label="Add friend"
+                value={newFriend}
+                onChange={handleSelect}
+              >
+                {friends
+                  .filter((friend) => !friend.selected)
+                  .map((friend) => (
+                    <MenuItem key={friend.name} value={friend.name}>
+                      {friend.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </Grid>
+            <Button onClick={() => addNewFriend()}>Add friend</Button>
+          </Grid>
           {friends.length > 0 ? (
-            <>
-              <List
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {friends.map((friend) => (
-                  <ListItem key={friend.name}>
-                    <ListItemText primary={friend.name} />
-                  </ListItem>
-                ))}
-              </List>
-              <Typography
-                variant="h6"
-                sx={{
-                  backgroundColor: "#3f51b5",
-                }}
-              >
-                Selected friends:
-              </Typography>
-              <List
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {friends.map((friend) => (
-                  <ListItem key={friend.name}>
-                    <ListItemText primary={friend.name} />
-                  </ListItem>
-                ))}
-              </List>
-            </>
+            <Grid container flexDirection={"column"}>
+              <Grid item>
+                <Typography variant="h6">Selected friends:</Typography>
+              </Grid>
+              <Grid item>
+                <List
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  {friends
+                    .filter((f) => f.selected)
+                    .map((friend) => (
+                      <ListItem key={friend.name}>
+                        <ListItemText primary={friend.name} />
+                      </ListItem>
+                    ))}
+                </List>
+              </Grid>
+            </Grid>
           ) : (
             <Typography
               variant="body2"
@@ -132,8 +123,6 @@ const ConversationView: React.FC<Props> = (props) => {
               Brak przyjaciół
             </Typography>
           )}
-
-          {newFriend && <Button type="submit">Add friend</Button>}
         </Box>
       </Modal>
     </div>
