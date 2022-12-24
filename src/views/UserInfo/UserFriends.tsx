@@ -346,7 +346,7 @@ export const UserFriends = (props: Props) => {
         />
         <TableContainer>
           <Table
-            sx={{ minWidth: 700, minHeight: 500 }}
+            sx={{ minWidth: 700, minHeight: "100%" }}
             aria-labelledby="tableTitle"
             size={dense ? "small" : "medium"}
           >

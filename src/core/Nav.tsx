@@ -138,11 +138,7 @@ export default function Nav() {
           {!isBoolean(user) && (
             <ConversationCreateModal
               name={"Konfa"}
-              friends={
-                user.friends
-                  ? user.friends.map((f) => f.firstName + " " + f.lastName)
-                  : []
-              }
+              friends={user.friends ? user.friends : []}
             />
           )}
           <SearchUserInput />
