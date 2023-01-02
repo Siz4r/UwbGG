@@ -1,9 +1,11 @@
 package com.example.uwbggbackend.message;
 
+import com.example.uwbggbackend.message.models.MessageCreateDTO;
 import com.example.uwbggbackend.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
