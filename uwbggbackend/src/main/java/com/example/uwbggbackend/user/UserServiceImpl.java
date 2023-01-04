@@ -79,4 +79,8 @@ public class UserServiceImpl implements UserDetailsService {
 
         userRepository.save(currentAuthenticatedUser);
     }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 }

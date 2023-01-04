@@ -32,15 +32,6 @@ public class AuthenticationController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<AuthenticationDto> login(@RequestBody @Valid AuthenticateRequest authenticateRequest,
                                                    HttpServletResponse response) {
-        try {
-            System.out.println(authenticateRequest.getNick());
-
-
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Wrong login or password!");
-        }
-        System.out.println(authenticateRequest.getPassword());
-
         final var userDetails = userService
                 .loadUserByUsername(authenticateRequest.getNick());
         final String accessToken = jwtTokenUtil.generateToken(userDetails, 1000 * 60 * 15);

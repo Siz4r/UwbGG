@@ -1,5 +1,6 @@
 package com.example.uwbggbackend.user.models;
 
+import com.example.uwbggbackend.invitations.models.Invitation;
 import com.example.uwbggbackend.participants.models.Participation;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -12,11 +13,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 @Entity(name = "UserData")
 public class User {
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
@@ -30,4 +29,7 @@ public class User {
     @JsonBackReference
     @OneToMany(mappedBy = "id.user")
     private List<Participation> participations;
+    @JsonBackReference
+    @OneToMany(mappedBy = "to")
+    private List<Invitation> invitations;
 }
