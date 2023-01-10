@@ -22,7 +22,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     public User getCurrentAuthenticatedUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if ((authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication instanceof AnonymousAuthenticationToken) {
             throw new ForbiddenException();
         }
 
@@ -34,6 +34,7 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if ((authentication instanceof AnonymousAuthenticationToken)) {
+            System.out.println("Hello");
             throw new ForbiddenException();
         }
 

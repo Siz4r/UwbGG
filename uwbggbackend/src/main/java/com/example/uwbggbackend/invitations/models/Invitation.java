@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -22,7 +24,9 @@ public class Invitation {
     private String senderFirstName;
     private String senderLastName;
     private String senderNick;
+    private UUID senderId;
     @ManyToOne
     private User to;
-    private Date sendDate;
+    private Timestamp sendDate;
+    private InvStatus status;
 }

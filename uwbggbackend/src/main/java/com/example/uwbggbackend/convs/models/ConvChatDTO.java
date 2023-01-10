@@ -1,20 +1,20 @@
 package com.example.uwbggbackend.convs.models;
 
-import com.example.uwbggbackend.message.models.LastMessageDTO;
+import com.example.uwbggbackend.message.MessageConvDTO;
 import com.example.uwbggbackend.message.models.Message;
 import com.example.uwbggbackend.participants.models.Participant;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor @NoArgsConstructor
-public class ConvListDTO {
+public class ConvChatDTO {
     private UUID id;
     private String name;
-    private boolean isActive;
-    private LastMessageDTO lastMessage;
+    private List<MessageConvDTO> messages;
+    private List<Participant> participants;
+
 }

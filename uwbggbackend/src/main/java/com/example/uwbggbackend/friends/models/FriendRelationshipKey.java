@@ -1,15 +1,20 @@
 package com.example.uwbggbackend.friends.models;
 
+import com.example.uwbggbackend.user.models.User;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @Embeddable
 @AllArgsConstructor @NoArgsConstructor
+@Data
 public class FriendRelationshipKey implements Serializable {
-    private UUID requesterId;
-    private UUID addressedId;
+    @ManyToOne
+    private User requester;
+    @ManyToOne
+    private User addressed;
 }

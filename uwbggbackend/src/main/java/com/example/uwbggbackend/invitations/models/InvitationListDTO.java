@@ -1,17 +1,16 @@
 package com.example.uwbggbackend.invitations.models;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
-@Builder
 public class InvitationListDTO {
+    private String id;
     private String senderNick;
     private String senderFirstName;
     private String senderLastName;
-    private LocalDate sendDate;
+    private Timestamp sendDate;
 }

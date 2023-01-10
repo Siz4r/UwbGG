@@ -1,28 +1,28 @@
 package com.example.uwbggbackend.message;
 
 import com.example.uwbggbackend.message.models.MessageCreateDTO;
-import com.example.uwbggbackend.security.AuthenticationFacade;
+import com.example.uwbggbackend.message.models.MessageResponseDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/message")
 public class MessageController {
     private final MessageService messageService;
-    private final AuthenticationFacade authenticationFacade;
-    @GetMapping(params = { "convID" })
-    public List<MessageConvDTO> getMessages(@RequestParam("convID") UUID convId) {
-        return messageService.getMessages(convId, authenticationFacade.getCurrentAuthenticatedUserId());
-    }
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @PostMapping(params = { "convID" })
-    public UUID addMessage(@RequestBody MessageCreateDTO dto,
-                           @RequestParam UUID convID) {
-        return messageService.addMessage(dto, convID,
-                authenticationFacade.getCurrentAuthenticatedUserId());
+    @MessageMapping("/sendMessage/")
+    public MessageResponseDTO addMessage(@Payload MessageCreateDTO dto) {
+        var output = messageService.addMessage(dto);
+        simpMessagingTemplate.convertAndSendToUser(dto.getConvID().toString(), "/private", output);
+        return output;
     }
 }

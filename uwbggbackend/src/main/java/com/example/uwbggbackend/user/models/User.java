@@ -1,5 +1,6 @@
 package com.example.uwbggbackend.user.models;
 
+import com.example.uwbggbackend.friends.models.FriendRelationship;
 import com.example.uwbggbackend.invitations.models.Invitation;
 import com.example.uwbggbackend.participants.models.Participation;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -32,4 +33,12 @@ public class User {
     @JsonBackReference
     @OneToMany(mappedBy = "to")
     private List<Invitation> invitations;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "id.requester")
+    private List<FriendRelationship> requested;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "id.addressed")
+    private List<FriendRelationship> addressed;
 }

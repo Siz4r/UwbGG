@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final UserServiceImpl userService;
 
@@ -32,6 +34,14 @@ public class AuthenticationController {
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<AuthenticationDto> login(@RequestBody @Valid AuthenticateRequest authenticateRequest,
                                                    HttpServletResponse response) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticateRequest.getNick(), authenticateRequest.getPassword())
+            );
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Wrong username or password!");
+        }
+
         final var userDetails = userService
                 .loadUserByUsername(authenticateRequest.getNick());
         final String accessToken = jwtTokenUtil.generateToken(userDetails, 1000 * 60 * 15);

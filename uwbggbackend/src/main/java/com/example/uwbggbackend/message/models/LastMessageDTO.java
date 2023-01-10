@@ -1,16 +1,15 @@
-package com.example.uwbggbackend.message;
+package com.example.uwbggbackend.message.models;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 @Getter
 @Setter
-public class MessageConvDTO {
-    private UUID id;
-    private UUID ownerId;
+@Builder
+public class LastMessageDTO {
     private String nick;
     private String content;
     private Timestamp sendTime;

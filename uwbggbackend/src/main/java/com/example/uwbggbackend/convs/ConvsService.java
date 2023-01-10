@@ -1,13 +1,16 @@
 package com.example.uwbggbackend.convs;
 
 import com.example.uwbggbackend.convs.models.Conv;
+import com.example.uwbggbackend.convs.models.ConvChatDTO;
 import com.example.uwbggbackend.convs.models.ConvCreateDTO;
 import com.example.uwbggbackend.convs.models.ConvListDTO;
+import com.example.uwbggbackend.message.MessageConvDTO;
+import com.example.uwbggbackend.message.models.LastMessageDTO;
 import com.example.uwbggbackend.participants.ParticipationService;
-import com.example.uwbggbackend.participants.models.Participant;
 import com.example.uwbggbackend.participants.models.ParticipationType;
 import com.example.uwbggbackend.user.UserServiceImpl;
 import com.example.uwbggbackend.util.exceptions.ForbiddenException;
+import com.example.uwbggbackend.util.exceptions.IncorrectIdInputException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -28,24 +31,37 @@ public class ConvsService {
         return userService.getUser(userID).getParticipations()
                 .stream()
                 .map(participation -> {
-                    var conv = participation.getId().getConv();
+                    var data = participation.getId().getConv();
+                    var conv = mapper.map(data, ConvListDTO.class);
+                    var lastMessage = data.getMessages().stream().findFirst().orElse(null);
+                    conv.setLastMessage(lastMessage != null ? LastMessageDTO.builder()
+                            .content(lastMessage.getContent())
+                            .sendTime(lastMessage.getSendTime())
+                            .nick(userService.getNick(lastMessage.getOwnerId())).build() : null);
 
-                    var convParticipants = conv.getParticipations()
-                            .stream()
-                            .map(participation1 -> {
-                                var convPart = mapper.map(participation1.getId().getUser(), Participant.class);
-                                convPart.setRole(participation1.getParticipationType());
-                                return convPart;
-                            })
-                            .collect(Collectors.toList());
-
-
-                    return ConvListDTO.builder()
-                            .name(conv.getName())
-                            .participants(convParticipants)
-                            .build();
+                    return conv;
                 })
                 .collect(Collectors.toList());
+    }
+
+    public ConvChatDTO getConvChatData(UUID convID, UUID userID) {
+        var data = convsRepository.findById(convID).orElseThrow(() -> new IncorrectIdInputException("No resource with such id!"));
+        var conv = mapper.map(data, ConvChatDTO.class);
+
+        if (data.getParticipations().stream()
+                .noneMatch(participant -> participant.getId().getUser().getId().equals(userID))) {
+            throw new ForbiddenException();
+        }
+
+        conv.setMessages(data.getMessages().stream()
+                .map(message -> {
+                    var mappedMessage = mapper.map(message, MessageConvDTO.class);
+                    mappedMessage.setNick(userService.getNick(mappedMessage.getOwnerId()));
+                    return mappedMessage;
+                })
+                .collect(Collectors.toList()));
+
+        return conv;
     }
 
     public UUID createConv(ConvCreateDTO dto, UUID userID) {

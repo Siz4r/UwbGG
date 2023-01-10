@@ -1,6 +1,8 @@
 package com.example.uwbggbackend.convs.models;
 
+import com.example.uwbggbackend.message.models.Message;
 import com.example.uwbggbackend.participants.models.Participation;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +27,8 @@ public class Conv {
     @OneToMany(mappedBy = "id.conv",
             cascade = CascadeType.REMOVE)
     private List<Participation> participations;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "conv", cascade = CascadeType.REMOVE)
+    private List<Message> messages;
 }

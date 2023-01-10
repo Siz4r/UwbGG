@@ -17,7 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -70,7 +72,12 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     public void changePassword(User currentAuthenticatedUser, UserNewPasswordDTO userNewPassword) {
-        if (!currentAuthenticatedUser.getPassword().equals(bCryptPasswordEncoder.encode(userNewPassword.getCurrentPassword()))) {
+
+        if (!bCryptPasswordEncoder.matches(userNewPassword.getCurrentPassword(),
+                currentAuthenticatedUser.getPassword())) {
+            System.out.println(currentAuthenticatedUser.getPassword());
+            System.out.println(userNewPassword.getCurrentPassword());
+            System.out.println(bCryptPasswordEncoder.encode(userNewPassword.getCurrentPassword()));
             throw new BadCredentialsException("Passwords don't match");
         }
 
@@ -82,5 +89,12 @@ public class UserServiceImpl implements UserDetailsService {
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    public List<UserSearchDTO> findByNick(String nick) {
+        return userRepository.findAllByNickContaining(nick)
+                .stream()
+                .map(user -> mapper.map(user, UserSearchDTO.class))
+                .collect(Collectors.toList());
     }
 }

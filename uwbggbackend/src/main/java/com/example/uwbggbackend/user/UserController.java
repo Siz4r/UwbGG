@@ -7,21 +7,23 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
     private final UserServiceImpl userService;
     private final AuthenticationFacade authenticationFacade;
 
-//    @GetMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<UserListDto> getUsers() {
-//        return userService.getUsers();
-//    }
+    @GetMapping("/{nick}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserSearchDTO> getUsersByNick(@PathVariable("nick") String nick) {
+        return userService.findByNick(nick);
+    }
 
     @PutMapping
-    @ResponseStatus(code = HttpStatus.NO_CONTENT, reason = "Resource deleted succesfully")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT, reason = "Resource updated successfully")
     public void editUser(@RequestBody UserEditDTO dto) {
         userService.updateAnUser(authenticationFacade.getCurrentAuthenticatedUserId(), dto);
     }

@@ -1,4 +1,4 @@
-package com.example.uwbggbackend.message;
+package com.example.uwbggbackend.message.models;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,10 +8,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class MessageConvDTO {
-    private UUID id;
+public class MessageResponseDTO {
+    private String content;
     private UUID ownerId;
     private String nick;
-    private String content;
     private Timestamp sendTime;
+    private UUID id;
 }
