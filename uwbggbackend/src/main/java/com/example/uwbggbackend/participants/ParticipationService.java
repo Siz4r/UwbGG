@@ -41,4 +41,14 @@ public class ParticipationService {
 
         return participation.getParticipationType().equals(ParticipationType.ADMIN);
     }
+
+    public void deleteFromConv(UUID convID, UUID userID) {
+        participationRepository.deleteById(createParticipationKey(userID, convID));
+    }
+
+    public void deleteUserFromConv(UUID convID, UUID userID, UUID currentAuthenticatedUser) {
+        var participation = participationRepository.findById(createParticipationKey(userID, convID)).orElseThrow(() -> new IncorrectIdInputException("Wrong id"));
+
+            participationRepository.deleteById(createParticipationKey(userID, convID));
+    }
 }

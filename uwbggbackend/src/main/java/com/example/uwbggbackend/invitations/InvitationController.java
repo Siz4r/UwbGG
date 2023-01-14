@@ -1,5 +1,6 @@
 package com.example.uwbggbackend.invitations;
 
+import com.example.uwbggbackend.friends.models.FriendListDTO;
 import com.example.uwbggbackend.invitations.models.InvitationListDTO;
 import com.example.uwbggbackend.security.AuthenticationFacade;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class InvitationController {
     }
 
     @PatchMapping("/accept/{invID}")
-    public void acceptInvitation(@PathVariable("invID") UUID invID) {
-        invitationService.acceptInvitaion(invID, authenticationFacade.getCurrentAuthenticatedUserId());
+    public FriendListDTO acceptInvitation(@PathVariable("invID") UUID invID) {
+        return invitationService.acceptInvitaion(invID, authenticationFacade.getCurrentAuthenticatedUserId());
     }
 
     @PatchMapping("/reject/{invID}")

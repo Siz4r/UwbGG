@@ -1,12 +1,10 @@
 package com.example.uwbggbackend.convs;
 
-import com.example.uwbggbackend.convs.models.Conv;
-import com.example.uwbggbackend.convs.models.ConvChatDTO;
-import com.example.uwbggbackend.convs.models.ConvCreateDTO;
-import com.example.uwbggbackend.convs.models.ConvListDTO;
+import com.example.uwbggbackend.convs.models.*;
 import com.example.uwbggbackend.message.MessageConvDTO;
 import com.example.uwbggbackend.message.models.LastMessageDTO;
 import com.example.uwbggbackend.participants.ParticipationService;
+import com.example.uwbggbackend.participants.models.Participant;
 import com.example.uwbggbackend.participants.models.ParticipationType;
 import com.example.uwbggbackend.user.UserServiceImpl;
 import com.example.uwbggbackend.util.exceptions.ForbiddenException;
@@ -53,6 +51,16 @@ public class ConvsService {
             throw new ForbiddenException();
         }
 
+        conv.setParticipants(
+                data.getParticipations().stream()
+                        .map(participation -> {
+                            var participant = mapper.map(participation.getId().getUser(), Participant.class);
+                            participant.setRole(participation.getParticipationType());
+                            return participant;
+                        })
+                        .collect(Collectors.toList())
+        );
+
         conv.setMessages(data.getMessages().stream()
                 .map(message -> {
                     var mappedMessage = mapper.map(message, MessageConvDTO.class);
@@ -64,20 +72,24 @@ public class ConvsService {
         return conv;
     }
 
-    public UUID createConv(ConvCreateDTO dto, UUID userID) {
+    public ConvCreateResponse createConv(ConvCreateDTO dto) {
         var conv = Conv.builder()
                         .name(dto.getName())
                 .participations(new ArrayList<>())
                 .build();
 
-        var convId = convsRepository.save(conv).getId();
+        var convDTO = mapper.map(convsRepository.save(conv), ConvCreateResponse.class);
 
         dto.getParticipants().forEach(participant ->
-                participationService.createParticipation(participant, convId
-                , ParticipationType.NORMAL));
+                participationService.createParticipation(participant, convDTO.getId(),
+                        ParticipationType.NORMAL));
 
-        participationService.createParticipation(userID, convId, ParticipationType.ADMIN);
-        return convId;
+        participationService.createParticipation(dto.getUserID(), convDTO.getId(),
+                ParticipationType.ADMIN);
+        var participants = dto.getParticipants();
+        participants.add(dto.getUserID());
+        convDTO.setParticipants(participants);
+        return convDTO;
     }
 
     public void deleteConv(UUID convId, UUID userID) {
@@ -86,5 +98,13 @@ public class ConvsService {
         } else {
             throw new ForbiddenException();
         }
+    }
+
+    public void deleteFromConv(UUID convID, UUID currentAuthenticatedUserId) {
+        participationService.deleteFromConv(convID, currentAuthenticatedUserId);
+    }
+
+    public void deleteUserFromConv(UUID convID, UUID userID, UUID currentUser) {
+        participationService.deleteUserFromConv(convID, userID, currentUser);
     }
 }

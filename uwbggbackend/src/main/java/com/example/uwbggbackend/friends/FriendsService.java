@@ -34,9 +34,10 @@ public class FriendsService {
         return friends;
     }
 
-    public void addFriend(UUID requesterID, UUID addresedID) {
+    public FriendListDTO addFriend(UUID requesterID, UUID addresedID) {
         friendsRepository.save(FriendRelationship.builder()
                 .id(new FriendRelationshipKey(userService.getUser(requesterID), userService.getUser(addresedID))).build());
+        return mapper.map(userService.getUser(requesterID), FriendListDTO.class);
     }
 
     public void deleteFriends(List<UUID> ids, User user) {

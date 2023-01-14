@@ -1,6 +1,7 @@
 package com.example.uwbggbackend.invitations;
 
 import com.example.uwbggbackend.friends.FriendsService;
+import com.example.uwbggbackend.friends.models.FriendListDTO;
 import com.example.uwbggbackend.invitations.models.InvStatus;
 import com.example.uwbggbackend.invitations.models.Invitation;
 import com.example.uwbggbackend.invitations.models.InvitationListDTO;
@@ -53,8 +54,8 @@ public class InvitationService {
         return id;
     }
 
-    public void acceptInvitaion(UUID invID, UUID userId) {
-        friendsService.addFriend(setStatusInv(invID, userId, InvStatus.ACCEPTED).getSenderId(), userId);
+    public FriendListDTO acceptInvitaion(UUID invID, UUID userId) {
+        return friendsService.addFriend(setStatusInv(invID, userId, InvStatus.ACCEPTED).getSenderId(), userId);
     }
 
     public void rejectInvitation(UUID invID, UUID userId) {
