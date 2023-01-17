@@ -31,7 +31,7 @@ public class InvitationController {
     }
 
     @GetMapping
-    public List<InvitationListDTO> getInvs() {;
+    public List<InvitationListDTO> getInvs() {
         return invitationService.getInvs(authenticationFacade.getCurrentAuthenticatedUserId());
     }
 }

@@ -3,7 +3,6 @@ package com.example.uwbggbackend.participants.models;
 import com.example.uwbggbackend.convs.models.Conv;
 import com.example.uwbggbackend.user.models.User;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

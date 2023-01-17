@@ -2,7 +2,6 @@ package com.example.uwbggbackend.authentication;
 
 import com.example.uwbggbackend.authentication.models.ExpiredTokenException;
 import com.example.uwbggbackend.user.UserRepository;
-import com.example.uwbggbackend.util.exceptions.ForbiddenException;
 import com.example.uwbggbackend.util.exceptions.IncorrectIdInputException;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ import java.util.function.Function;
 @Service
 @AllArgsConstructor
 public class JwtUtil {
-    private final String SECRET_KEY = "dupa";
+    private final String SECRET_KEY = "secret_code";
     private final UserRepository userRepository;
 
     public String extractId(String token) {
@@ -42,7 +41,7 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails, Integer time) {
         Map<String, Object> claims = new HashMap<>();
-        var user = userRepository.findUserByNick(userDetails.getUsername()).get();
+        var user = userRepository.findUserByNick(userDetails.getUsername()).orElseThrow(RuntimeException::new);
         return createToken(claims, user.getId().toString(), time);
     }
 
@@ -52,34 +51,12 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
     }
 
-    public String extractBearerFromHeader(String header) throws Exception{
-        if (header.startsWith("Bearer ")) {
-            return header.substring(7);
-        } else {
-            throw new Exception("Invalid bearer token structure");
-        }
-    }
-
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public void validateToken(String token, UserDetails userDetails) {
         final var email = userRepository.findById(UUID.fromString(extractId(token))).orElseThrow(() -> new IncorrectIdInputException("Wrong id!")).getNick();
 
         if (isTokenExpired(token) || !email.equals(userDetails.getUsername())) {
             throw new ExpiredTokenException("Token has expired");
         }
-        return true;
-    }
-
-    public UUID getIdFromRequest(HttpServletRequest request) throws Exception {
-        String token;
-        var header = request.getHeader("Authorization");
-
-        if (Objects.isNull(header)) {
-            throw new ForbiddenException();
-        }
-
-        token = extractBearerFromHeader(header);
-
-        return UUID.fromString(extractId(token));
     }
 
     public Boolean validateToken(String token, HttpServletRequest httpServletRequest) {

@@ -12,4 +12,5 @@ public class ConvCreateResponse {
     private String name;
     private UUID id;
     private List<UUID> participants;
+    private boolean isActive;
 }

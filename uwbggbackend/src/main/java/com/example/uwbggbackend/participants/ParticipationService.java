@@ -4,7 +4,6 @@ import com.example.uwbggbackend.convs.ConvsRepository;
 import com.example.uwbggbackend.participants.models.Participation;
 import com.example.uwbggbackend.participants.models.ParticipationKey;
 import com.example.uwbggbackend.participants.models.ParticipationType;
-import com.example.uwbggbackend.user.UserRepository;
 import com.example.uwbggbackend.user.UserServiceImpl;
 import com.example.uwbggbackend.util.exceptions.ForbiddenException;
 import com.example.uwbggbackend.util.exceptions.IncorrectIdInputException;
@@ -46,9 +45,7 @@ public class ParticipationService {
         participationRepository.deleteById(createParticipationKey(userID, convID));
     }
 
-    public void deleteUserFromConv(UUID convID, UUID userID, UUID currentAuthenticatedUser) {
-        var participation = participationRepository.findById(createParticipationKey(userID, convID)).orElseThrow(() -> new IncorrectIdInputException("Wrong id"));
-
-            participationRepository.deleteById(createParticipationKey(userID, convID));
+    public void deleteUserFromConv(UUID convID, UUID userID) {
+        participationRepository.deleteById(createParticipationKey(userID, convID));
     }
 }

@@ -75,9 +75,6 @@ public class UserServiceImpl implements UserDetailsService {
 
         if (!bCryptPasswordEncoder.matches(userNewPassword.getCurrentPassword(),
                 currentAuthenticatedUser.getPassword())) {
-            System.out.println(currentAuthenticatedUser.getPassword());
-            System.out.println(userNewPassword.getCurrentPassword());
-            System.out.println(bCryptPasswordEncoder.encode(userNewPassword.getCurrentPassword()));
             throw new BadCredentialsException("Passwords don't match");
         }
 
@@ -85,10 +82,6 @@ public class UserServiceImpl implements UserDetailsService {
         currentAuthenticatedUser.setPassword(newPassword);
 
         userRepository.save(currentAuthenticatedUser);
-    }
-
-    public void saveUser(User user) {
-        userRepository.save(user);
     }
 
     public List<UserSearchDTO> findByNick(String nick) {

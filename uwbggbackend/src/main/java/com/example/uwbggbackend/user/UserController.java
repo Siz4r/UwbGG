@@ -1,13 +1,18 @@
 package com.example.uwbggbackend.user;
 
+import com.example.uwbggbackend.security.ActiveUserStore;
 import com.example.uwbggbackend.security.AuthenticationFacade;
 import com.example.uwbggbackend.user.models.UserEditDTO;
 import com.example.uwbggbackend.user.models.UserNewPasswordDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @AllArgsConstructor
 @RestController
@@ -15,6 +20,18 @@ import java.util.List;
 public class UserController {
     private final UserServiceImpl userService;
     private final AuthenticationFacade authenticationFacade;
+
+    private final ActiveUserStore activeUserStore;
+    @Qualifier("sessionRegistry")
+    private final SessionRegistry sessionRegistry;
+
+    @GetMapping("/loggedUsers")
+    public void getLoggedUsers(Locale locale, Model model) {
+        model.addAttribute("users", activeUserStore.getUsers());
+        sessionRegistry.getAllPrincipals().stream()
+                .map(principal -> sessionRegistry.getAllSessions(principal, false))
+                .forEach(System.out::println);
+    }
 
     @GetMapping("/{nick}")
     @ResponseStatus(HttpStatus.OK)

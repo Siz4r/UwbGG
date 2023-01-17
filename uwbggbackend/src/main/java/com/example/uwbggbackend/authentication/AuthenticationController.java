@@ -1,5 +1,6 @@
 package com.example.uwbggbackend.authentication;
 
+import com.example.uwbggbackend.activationTracker.ActivationTracker;
 import com.example.uwbggbackend.authentication.models.AuthenticateRequest;
 import com.example.uwbggbackend.authentication.models.AuthenticationDto;
 import com.example.uwbggbackend.authentication.models.ExpiredTokenException;
@@ -16,7 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +29,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final UserServiceImpl userService;
+    private final ActivationTracker activationTracker;
 
     @PostMapping("/login")
     @ResponseStatus(value = HttpStatus.OK)
@@ -47,9 +48,9 @@ public class AuthenticationController {
         final String accessToken = jwtTokenUtil.generateToken(userDetails, 1000 * 60 * 15);
         final String refreshToken = jwtTokenUtil.generateToken(userDetails, 1000 * 60 * 60 * 24 * 7);
 
-        User user = userService.getUserByUsername(authenticateRequest.getNick());
+        var user = userService.getUserByUsername(authenticateRequest.getNick());
 
-        Cookie cookie = new Cookie("RefreshToken", refreshToken);
+        var cookie = new Cookie("RefreshToken", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         // @TODO: change to production domain
@@ -57,6 +58,8 @@ public class AuthenticationController {
 //        cookie.setSecure(true);
         cookie.setMaxAge(1000 * 60 * 60 * 24 * 7);
         response.addCookie(cookie);
+
+        activationTracker.onLogin(user.getNick());
 
         return ResponseEntity.ok(
                 AuthenticationDto.builder()
@@ -94,6 +97,7 @@ public class AuthenticationController {
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<?> logout(HttpServletResponse response) {
+        activationTracker.onLogout();
         Cookie cookie = new Cookie("RefreshToken", null);
         cookie.setPath("/");
         cookie.setDomain("localhost");

@@ -3,7 +3,7 @@ package com.example.uwbggbackend.message;
 import com.example.uwbggbackend.convs.ConvsRepository;
 import com.example.uwbggbackend.message.models.Message;
 import com.example.uwbggbackend.message.models.MessageCreateDTO;
-import com.example.uwbggbackend.message.models.MessageResponseDTO;
+import com.example.uwbggbackend.message.models.SimpleMessageDTO;
 import com.example.uwbggbackend.user.UserServiceImpl;
 import com.example.uwbggbackend.util.exceptions.IncorrectIdInputException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserServiceImpl userService;
     private final ModelMapper mapper;
-    public MessageResponseDTO addMessage(MessageCreateDTO dto) {
+    public SimpleMessageDTO addMessage(MessageCreateDTO dto) {
         var owner = userService.getUser(dto.getUserID());
         var conv = convsRepository.findById(dto.getConvID()).orElseThrow(() -> new IncorrectIdInputException("Found no resource with such id!"));
         var message = Message.builder()
@@ -31,6 +31,6 @@ public class MessageService {
                 .nick(owner.getNick())
                 .build();
         message.setConv(conv);
-        return mapper.map(messageRepository.save(message), MessageResponseDTO.class);
+        return mapper.map(messageRepository.save(message), SimpleMessageDTO.class);
     }
 }

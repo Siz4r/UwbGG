@@ -27,16 +27,7 @@ public class InvitationService {
     private final FriendsService friendsService;
     public UUID sendInvitation(UUID toId, User requester) {
         var addressed = userService.getUser(toId);
-        if (friendsService.getFriends(requester.getId()).stream()
-                .anyMatch(friendListDTO -> friendListDTO.getId().equals(toId))) {
-            throw new ForbiddenException();
-        }
-
-        if (addressed.getInvitations().stream()
-                .filter(invitation -> invitation.getStatus().equals(InvStatus.PENDING))
-                .anyMatch(invitation -> invitation.getSenderId().equals(requester.getId()))) {
-            throw new IllegalArgumentException("You have already send invitation to this user!");
-        }
+        checkInvitationValidity(toId, requester, addressed);
 
         var id = UUID.randomUUID();
 
@@ -52,6 +43,19 @@ public class InvitationService {
         invitationRepository.save(inv);
 
         return id;
+    }
+
+    public void checkInvitationValidity(UUID toId, User requester, User addressed) {
+        if (friendsService.getFriends(requester.getId()).stream()
+                .anyMatch(friendListDTO -> friendListDTO.getId().equals(toId))) {
+            throw new ForbiddenException();
+        }
+
+        if (addressed.getInvitations().stream()
+                .filter(invitation -> invitation.getStatus().equals(InvStatus.PENDING))
+                .anyMatch(invitation -> invitation.getSenderId().equals(requester.getId()))) {
+            throw new IllegalArgumentException("You have already send invitation to this user!");
+        }
     }
 
     public FriendListDTO acceptInvitaion(UUID invID, UUID userId) {

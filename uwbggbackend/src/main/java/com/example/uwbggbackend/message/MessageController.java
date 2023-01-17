@@ -7,9 +7,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,11 +18,16 @@ public class MessageController {
 
     @MessageMapping("/sendMessage/")
     public MessageResponseDTO addMessage(@Payload MessageCreateDTO dto) {
-        System.out.println(dto.getImageRawData());
         var output = messageService.addMessage(dto);
         output.setImageRawData(dto.getImageRawData());
-        simpMessagingTemplate.convertAndSendToUser(dto.getConvID().toString(), "/private", output);
-        return output;
+
+        var response = MessageResponseDTO.builder()
+                .isSimpleMessage(true)
+                .data(output)
+                .build();
+
+        simpMessagingTemplate.convertAndSendToUser(dto.getConvID().toString(), "/private", response);
+        return response;
     }
 
 }

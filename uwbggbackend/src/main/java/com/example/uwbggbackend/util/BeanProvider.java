@@ -1,5 +1,6 @@
 package com.example.uwbggbackend.util;
 
+import com.example.uwbggbackend.security.ActiveUserStore;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,4 +18,7 @@ class BeanProvider {
     ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
+    @Bean
+    ActiveUserStore activeUserStore() {return new ActiveUserStore();}
 }

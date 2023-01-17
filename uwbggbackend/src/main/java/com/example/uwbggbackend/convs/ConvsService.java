@@ -1,6 +1,8 @@
 package com.example.uwbggbackend.convs;
 
+import com.example.uwbggbackend.activationTracker.ActivationTracker;
 import com.example.uwbggbackend.convs.models.*;
+import com.example.uwbggbackend.friends.models.FriendListDTO;
 import com.example.uwbggbackend.message.MessageConvDTO;
 import com.example.uwbggbackend.message.models.LastMessageDTO;
 import com.example.uwbggbackend.participants.ParticipationService;
@@ -24,13 +26,23 @@ public class ConvsService {
     private final ConvsRepository convsRepository;
     private final ParticipationService participationService;
     private final UserServiceImpl userService;
+    private final ActivationTracker activationTracker;
     private final ModelMapper mapper;
     public List<ConvListDTO> getConvs(UUID userID) {
-        return userService.getUser(userID).getParticipations()
+        return userService.getUser(userID)
+                .getParticipations()
                 .stream()
                 .map(participation -> {
                     var data = participation.getId().getConv();
                     var conv = mapper.map(data, ConvListDTO.class);
+                    var particiapnts = data.getParticipations().stream()
+                            .map(participation1 -> participation1.getId().getUser().getId())
+                            .toList();
+                    conv.setActive(activationTracker.getActiveFriends(userID)
+                            .stream()
+                            .map(FriendListDTO::getId)
+                            .anyMatch(particiapnts::contains));
+
                     var lastMessage = data.getMessages().stream().findFirst().orElse(null);
                     conv.setLastMessage(lastMessage != null ? LastMessageDTO.builder()
                             .content(lastMessage.getContent())
@@ -77,18 +89,25 @@ public class ConvsService {
                         .name(dto.getName())
                 .participations(new ArrayList<>())
                 .build();
+        var participants = dto.getParticipants();
 
         var convDTO = mapper.map(convsRepository.save(conv), ConvCreateResponse.class);
 
-        dto.getParticipants().forEach(participant ->
+        participants.forEach(participant ->
                 participationService.createParticipation(participant, convDTO.getId(),
                         ParticipationType.NORMAL));
 
         participationService.createParticipation(dto.getUserID(), convDTO.getId(),
                 ParticipationType.ADMIN);
-        var participants = dto.getParticipants();
+
         participants.add(dto.getUserID());
         convDTO.setParticipants(participants);
+
+        convDTO.setActive(activationTracker.getActiveFriends(dto.getUserID())
+                .stream()
+                .map(FriendListDTO::getId)
+                .anyMatch(participants::contains));
+
         return convDTO;
     }
 
@@ -104,7 +123,19 @@ public class ConvsService {
         participationService.deleteFromConv(convID, currentAuthenticatedUserId);
     }
 
-    public void deleteUserFromConv(UUID convID, UUID userID, UUID currentUser) {
-        participationService.deleteUserFromConv(convID, userID, currentUser);
+    public void deleteUserFromConv(UUID convID, UUID userID) {
+        participationService.deleteUserFromConv(convID, userID);
+    }
+
+    public Participant addParticipantToConv(UUID convID, UUID userID, UUID currentAuthenticatedUserId) {
+        if (!participationService.ifUserHasAdminParticipation(currentAuthenticatedUserId, convID)) {
+            throw new ForbiddenException();
+        }
+        var key = participationService.createParticipationKey(userID, convID);
+        var participant = mapper.map(key.getUser(), Participant.class);
+        participant.setRole(ParticipationType.NORMAL);
+        participationService.createParticipation(userID, convID, ParticipationType.NORMAL);
+
+        return participant;
     }
 }

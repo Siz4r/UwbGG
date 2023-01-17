@@ -3,6 +3,7 @@ package com.example.uwbggbackend.convs;
 import com.example.uwbggbackend.convs.models.ConvChatDTO;
 import com.example.uwbggbackend.convs.models.ConvCreateDTO;
 import com.example.uwbggbackend.convs.models.ConvListDTO;
+import com.example.uwbggbackend.participants.models.Participant;
 import com.example.uwbggbackend.security.AuthenticationFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,12 @@ public class ConvsController {
 
     @DeleteMapping("{convID}/{userID}")
     public void deleteUserFromConv(@PathVariable("convID") UUID convID, @PathVariable("userID") UUID userID) {
-        convsService.deleteUserFromConv(convID, userID, authenticationFacade.getCurrentAuthenticatedUserId());
+        convsService.deleteUserFromConv(convID, userID);
+    }
+
+    @PostMapping(path = "addParticipant")
+    public Participant addParticipant(@RequestParam("convID") UUID convID,
+                                      @RequestParam("userID") UUID userID) {
+        return convsService.addParticipantToConv(convID, userID, authenticationFacade.getCurrentAuthenticatedUserId());
     }
 }
