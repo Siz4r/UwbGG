@@ -54,4 +54,4 @@ konwersacji również może dodawać lub usuwać z niej użytkowników. Komunika
 *real time* zostało zaimplementowana dzięki ***Spring Messaging***.
 
 # Diagramy
-![database.png](database.png)
+![database](https://user-images.githubusercontent.com/72757685/212986532-942752da-3f12-41b4-b4a6-6323d14d95b6.png)
