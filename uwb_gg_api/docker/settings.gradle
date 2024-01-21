@@ -1,0 +1,2 @@
+include(':uwb_gg_api')
+rootProject.name='uwb_gg'

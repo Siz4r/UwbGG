@@ -1,1 +1,1 @@
-include(':uwbggbackend')
+include(':uwb_gg_api')
