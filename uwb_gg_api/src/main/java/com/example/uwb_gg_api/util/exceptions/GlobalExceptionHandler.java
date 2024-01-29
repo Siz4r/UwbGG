@@ -1,5 +1,6 @@
 package com.example.uwb_gg_api.util.exceptions;
 
+import com.example.uwb_gg_api.authentication.models.ExpiredTokenException;
 import com.example.uwb_gg_api.user.exception.WrongEmailException;
 import com.example.uwb_gg_api.user.exception.WrongUsernameException;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IncorrectInputDataException.class)
     public ResponseEntity<String> handleNotFoundResourceException(IncorrectInputDataException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ExpiredTokenException.class)
+    public ResponseEntity<String> handleExpiredTokenException(ExpiredTokenException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 }

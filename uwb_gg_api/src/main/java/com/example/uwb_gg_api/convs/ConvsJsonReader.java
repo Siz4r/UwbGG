@@ -1,6 +1,5 @@
 package com.example.uwb_gg_api.convs;
 
-import com.example.uwb_gg_api.convs.models.ConvChatDTO;
 import com.example.uwb_gg_api.convs.models.ConvDetailsDTO;
 import com.example.uwb_gg_api.convs.models.ConvListDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

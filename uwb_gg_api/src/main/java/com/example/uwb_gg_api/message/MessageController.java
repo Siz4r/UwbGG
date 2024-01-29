@@ -3,9 +3,9 @@ package com.example.uwb_gg_api.message;
 import com.example.uwb_gg_api.message.models.MessageCreateDTO;
 import com.example.uwb_gg_api.message.models.MessageResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +16,7 @@ public class MessageController {
     private final MessageService messageService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    @MessageMapping("/sendMessage/")
+    @PostMapping("/sendMessage/")
     public MessageResponseDTO addMessage(@Payload MessageCreateDTO dto) {
         var output = messageService.addMessage(dto);
         output.setImageRawData(dto.getImageRawData());

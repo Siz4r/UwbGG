@@ -34,7 +34,7 @@ export const ConversationDetails = ({data}: Props) => {
     setShowParticipants(!showParticipants);
   };
   if (data === undefined) return <></>
-
+  //dominik.pliki@gmail.com
   const {
     id,
     name,

@@ -41,8 +41,14 @@ public class WebSecurityConfig {
         return http
                 .addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors().and().csrf().disable()
+                .authorizeHttpRequests(requests ->
+                        requests
+                                .requestMatchers("/auth/login", "/auth/register")
+                                .permitAll()
+                                .requestMatchers("/convs", "/user", "/message/*")
+                                .authenticated()
+                )
                 .build();
-//        return http.csrf().and().cors().disable().authorizeHttpRequests().anyRequest().permitAll().and().build();
     }
 
     @Bean

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -13,11 +14,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ConvCreateDTO {
     @Size(min = 5)
-    private final String name;
+    private String name;
     @NotNull
-    private final UUID userID;
+    private UUID userID;
     @NotEmpty
-    private final List<@NotNull UUID> participants;
+    private List<@NotNull UUID> participants;
 }

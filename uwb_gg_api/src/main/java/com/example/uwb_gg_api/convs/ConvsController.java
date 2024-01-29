@@ -29,17 +29,18 @@ public class ConvsController {
 
     @GetMapping
     public List<ConvListDTO> getConvsByUser() {
-        return convsJsonReader.getConvs();
+        return convsService.getConvs(authenticationFacade.getCurrentAuthenticatedUserId());
     }
 
     @GetMapping("{id}")
-    public ConvDetailsDTO getChatData(@PathVariable("id") UUID id) {
-        return convsJsonReader.getConvDetails(id);
-//        return convsService.getConvChatData(id, authenticationFacade.getCurrentAuthenticatedUserId());
+    public ConvChatDTO getChatData(@PathVariable("id") UUID id) {
+//        return convsJsonReader.getConvDetails(id);
+        return convsService.getConvChatData(id, authenticationFacade.getCurrentAuthenticatedUserId());
     }
 
     @MessageMapping("/conversations/")
-    @PostMapping(consumes={MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE },
+            produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public UUID createConv(@RequestBody @Valid ConvCreateDTO dto) {
         var conv = convsService.createConv(dto);
         for (var u:
